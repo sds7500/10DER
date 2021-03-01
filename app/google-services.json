@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1040938671787",
+    "firebase_url": "https://appdevproject-2f385.firebaseio.com",
+    "project_id": "appdevproject-2f385",
+    "storage_bucket": "appdevproject-2f385.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040938671787:android:6f2d675fb4a043b026a1ee",
+        "android_client_info": {
+          "package_name": "com.somya.appdevproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040938671787-qe7aljsk4c8paqigjeqhi3db1als821d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6ppk9CpHKofesF-ofvKoOVY4cTEk7Oxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040938671787-qe7aljsk4c8paqigjeqhi3db1als821d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">AppDevProject</string>
+    <string-array name="usertype">
+        <item>Requester</item>
+        <item>Provider</item>
+    </string-array>
+
+    <string-array name="Aoi">
+        <item>Clothing</item>
+        <item>Furniture</item>
+        <item>Education</item>
+        <item>Gadgets</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="t">this</string>
+</resources>
