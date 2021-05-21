@@ -7,6 +7,7 @@ require("./db/conn")
 const Register = require('./models/registers');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
+const auth = require('./middleware/auth');
 
 const PORT=process.env.PORT||3000;
 
@@ -57,23 +58,23 @@ app.post('/enter',async(req,res)=>{
         const name=req.body.login_name;
         const pwd=req.body.login_password;
         
-        const username=await Register.findOne({name:req.body.login_name})
+        const username=await Register.findOne({$or :[{email:name},{Phone:name}]})
         
         const isMatch=await bcrypt.compare(pwd,username.password)
         const token=await username.genrateAuthToken();
 
         res.cookie("jwt",token,{
-            expires:new Date(Date.now()+50000),
+            expires:new Date(Date.now()+5000000),
             httpOnly:true
         });
         const registered=await username.save();
 
         if(isMatch){
-            res.status(201).render('client',{
+            res.status(201).render('index',{
                 login:name,
-                register:'Cart',
-                login_h:'/index',
-                register_h:'/cart'
+                register:'logout',
+                login_h:'/cart',
+                register_h:'/logout'
             });
         }
     }
@@ -93,6 +94,24 @@ app.get("/",(req,res)=>{
 
 app.get("/login",(req,res)=>{
     res.render('login')
+})
+
+app.get('/cart',auth,(req,res)=>{
+    res.render('cart');
+})
+
+app.get('/logout',auth,async(req,res)=>{
+    try{
+        req.user.tokens=req.user.tokens.filter((curr)=>{
+            return curr.token!=req.token
+        })
+        res.clearCookie('jwt');
+        await req.user.save();
+        res.render("login");
+    }
+   catch(err){
+       res.status(500).send(err)
+   }
 })
 
 app.listen(PORT,()=>{
