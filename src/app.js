@@ -5,9 +5,11 @@ const path = require('path');
 const hbs = require('hbs');
 require("./db/conn")
 const Register = require('./models/registers');
+const Tender=require('./models/tender')
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const auth = require('./middleware/auth');
+const jwt = require('jsonwebtoken');
 
 const PORT=process.env.PORT||3000;
 
@@ -64,14 +66,13 @@ app.post('/enter',async(req,res)=>{
         const token=await username.genrateAuthToken();
 
         res.cookie("jwt",token,{
-            expires:new Date(Date.now()+5000000),
             httpOnly:true
         });
         const registered=await username.save();
 
         if(isMatch){
             res.status(201).render('index',{
-                login:name,
+                login:username.name,
                 register:'logout',
                 login_h:'/cart',
                 register_h:'/logout'
@@ -83,13 +84,45 @@ app.post('/enter',async(req,res)=>{
     }
 })
 
-app.get("/",(req,res)=>{
-    res.render('index',{
-        login:'Login',
-        register:'Register',
-        login_h:'/login',
-        register_h:'/login'
-    })
+app.post('/createTender',auth,async(req,res)=>{
+    try{
+        const registerTender=new Tender({
+            Username: req.user._id,
+            Title:req.body.title ,
+            Description:req.body.description ,
+            Category:req.body.category,
+            Start_Date:Date.now(),
+            Start_date:new Date().toISOString().slice(0, 10),
+            End_Date:req.body.end_date
+        })
+        const registered=await registerTender.save();
+        res.status(201).render('cart');
+    }
+    catch(error){
+        res.status(400).send(error);
+    }
+})
+
+app.get("/",async(req,res)=>{
+    const token=req.cookies.jwt;
+    if(typeof token === 'undefined'){
+        res.render('index',{
+            login:'Login',
+            register:'Register',
+            login_h:'/login',
+            register_h:'/login'
+        })
+    }
+    else{
+        const verifyUser=jwt.verify(token,process.env.SECRET_KEY);
+        const user=await Register.findOne({_id:verifyUser._id})
+        res.render('index',{
+            login:user.name,
+            register:'logout',
+            login_h:'/cart',
+            register_h:'/logout'
+        })
+    }
 })
 
 app.get("/login",(req,res)=>{
@@ -99,6 +132,32 @@ app.get("/login",(req,res)=>{
 app.get('/cart',auth,(req,res)=>{
     res.render('cart');
 })
+
+app.get('/atender',auth,async(req,res)=>{
+    const result=await Tender.find({$and :[{Username:req.user._id},{End_Date : {$gte:Date.now()}}]});
+    
+    res.render('atender',{
+        Tender:result
+    })
+})
+
+app.get('/ctender',auth,async(req,res)=>{
+    const result=await Tender.find({$and :[{Username:req.user._id},{End_Date : {$lt:Date.now()}}]});
+    
+    res.render('ctender',{
+        Tender:result
+    })
+})
+
+app.get('/contact',(req,res)=>{
+    res.render('contact');
+})
+
+app.get('/team',(req,res)=>{
+    res.render('team');
+})
+
+
 
 app.get('/logout',auth,async(req,res)=>{
     try{

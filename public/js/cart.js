@@ -32,3 +32,35 @@ function colorLink(){
     }
 }
 linkColor.forEach(l=> l.addEventListener('click', colorLink))
+
+
+$(document).ready(function()
+{
+$("#popover").hide();
+
+$("body").fadeIn("100");
+
+$("#create").click(function()
+{
+	$("#s1").show();
+	$("#desc1").show();
+	$("#step1").show();
+	$("#popover").css("opacity","1");
+	$("#popover").fadeIn("slow");
+});
+
+$("#s1").click(function()
+{
+	$("#step1").fadeOut("slow");
+	$("#desc1").fadeOut("slow");
+	$("#s1").fadeOut("slow");
+	$("#popover").fadeOut("slow");
+	
+});
+
+$("#close").click(function()
+{
+	$("#popover").fadeOut("slow");
+});
+
+});
