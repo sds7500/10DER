@@ -10,7 +10,8 @@ const tenderSchema=new mongoose.Schema({
         type:String
     },
     Category:{
-        type:String 
+        type:String,
+        required:true
     },
     Start_Date:Date,
     Start_date:String,
